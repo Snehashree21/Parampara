@@ -1,0 +1,112 @@
+"use client";
+
+import Link from "next/link";
+import { usePathname } from "next/navigation";
+import { useState } from "react";
+
+const navLinks = [
+  { href: "/", label: "Home" },
+  { href: "/instructors", label: "Instructors" },
+  { href: "/about", label: "About" },
+];
+
+export default function Navbar() {
+  const pathname = usePathname();
+  const [menuOpen, setMenuOpen] = useState(false);
+
+  return (
+    <nav className="sticky top-0 z-50 w-full bg-white border-b border-gray-200 shadow-sm">
+      <div className="max-w-6xl mx-auto px-4 py-3 flex items-center justify-between">
+        {/* Logo / Brand */}
+        <Link href="/" className="flex items-center gap-2">
+          <span className="text-2xl font-bold text-orange-600 tracking-tight">
+            🌏 Parampara
+          </span>
+        </Link>
+
+        {/* Desktop Nav Links */}
+        <ul className="hidden md:flex items-center gap-6">
+          {navLinks.map((link) => (
+            <li key={link.href}>
+              <Link
+                href={link.href}
+                className={`text-sm font-medium transition-colors duration-200 hover:text-orange-600 ${
+                  pathname === link.href
+                    ? "text-orange-600 border-b-2 border-orange-600 pb-0.5"
+                    : "text-gray-600"
+                }`}
+              >
+                {link.label}
+              </Link>
+            </li>
+          ))}
+        </ul>
+
+        {/* CTA Button — Desktop */}
+        <div className="hidden md:block">
+          <Link
+            href="/instructors"
+            className="bg-orange-600 text-white text-sm font-semibold px-4 py-2 rounded-lg hover:bg-orange-700 transition-colors duration-200"
+          >
+            Find an Instructor
+          </Link>
+        </div>
+
+        {/* Hamburger Button — Mobile */}
+        <button
+          className="md:hidden flex flex-col gap-1.5 p-2"
+          onClick={() => setMenuOpen(!menuOpen)}
+          aria-label="Toggle menu"
+        >
+          <span
+            className={`block w-6 h-0.5 bg-gray-700 transition-transform duration-300 ${
+              menuOpen ? "rotate-45 translate-y-2" : ""
+            }`}
+          />
+          <span
+            className={`block w-6 h-0.5 bg-gray-700 transition-opacity duration-300 ${
+              menuOpen ? "opacity-0" : ""
+            }`}
+          />
+          <span
+            className={`block w-6 h-0.5 bg-gray-700 transition-transform duration-300 ${
+              menuOpen ? "-rotate-45 -translate-y-2" : ""
+            }`}
+          />
+        </button>
+      </div>
+
+      {/* Mobile Dropdown Menu */}
+      {menuOpen && (
+        <div className="md:hidden bg-white border-t border-gray-100 px-4 pb-4">
+          <ul className="flex flex-col gap-3 pt-3">
+            {navLinks.map((link) => (
+              <li key={link.href}>
+                <Link
+                  href={link.href}
+                  onClick={() => setMenuOpen(false)}
+                  className={`block text-sm font-medium py-2 px-3 rounded-md transition-colors duration-200 ${
+                    pathname === link.href
+                      ? "bg-orange-50 text-orange-600 font-semibold"
+                      : "text-gray-600 hover:bg-gray-50 hover:text-orange-600"
+                  }`}
+                >
+                  {link.label}
+                </Link>
+              </li>
+            ))}
+            <li>
+              <Link
+                href="/instructors"
+                onClick={() => setMenuOpen(false)}
+                className="block text-center bg-orange-600 text-white text-sm font-semibold px-4 py-2 rounded-lg hover:bg-orange-700 transition-colors duration-200"
+              >
+                Find an Instructor
+              </Link>
+            </li>
+          </ul>
+        </div>
+      )}
+    </nav>
+  );
+}
